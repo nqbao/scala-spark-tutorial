@@ -1,5 +1,8 @@
 package com.sparkTutorial.rdd.airports
 
+import org.apache.spark.sql.SparkSession
+import com.sparkTutorial.util._
+
 object AirportsInUsaProblem {
   def main(args: Array[String]) {
 
@@ -15,5 +18,22 @@ object AirportsInUsaProblem {
        "Dowagiac Municipal Airport", "Dowagiac"
        ...
      */
+
+    Util.cleanDirectory("out/airports_in_usa")
+
+    val spark = SparkSession.builder()
+      .master("local[2]")
+      .getOrCreate()
+
+    val sc = spark.sparkContext
+
+    val raw = sc.textFile("in/airports.text")
+    val out = raw.map(line => {
+        line.split(",")
+      })
+      .filter(line => line(3) == "\"United States\"")
+      .map(line => s"${line(2)},${line(3)}")
+
+    out.saveAsTextFile("out/airports_in_usa")
   }
 }
