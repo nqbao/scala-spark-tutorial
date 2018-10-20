@@ -1,7 +1,7 @@
 package com.sparkTutorial.rdd.airports
 
+import com.sparkTutorial.commons.Utils
 import org.apache.spark.sql.SparkSession
-import com.sparkTutorial.util._
 
 object AirportsInUsaProblem {
   def main(args: Array[String]) {
@@ -19,7 +19,7 @@ object AirportsInUsaProblem {
        ...
      */
 
-    Util.cleanDirectory("out/airports_in_usa")
+    Utils.cleanDirectory("out/airports_in_usa")
 
     val spark = SparkSession.builder()
       .master("local[2]")
