@@ -1,5 +1,7 @@
 package com.sparkTutorial.commons
 
+import org.apache.spark.sql.SparkSession
+
 import scala.reflect.io.Directory
 
 object Utils {
@@ -11,5 +13,11 @@ object Utils {
     if (d.exists) {
       d.deleteRecursively()
     }
+  }
+
+  def getSpark(): SparkSession = {
+    SparkSession.builder()
+      .master("local[2]")
+      .getOrCreate()
   }
 }
