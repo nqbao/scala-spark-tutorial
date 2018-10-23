@@ -1,5 +1,7 @@
 package com.sparkTutorial.rdd.nasaApacheWebLogs
 
+import com.sparkTutorial.commons.Utils
+
 object SameHostsProblem {
 
   def main(args: Array[String]) {
@@ -19,5 +21,22 @@ object SameHostsProblem {
 
        Make sure the head lines are removed in the resulting RDD.
      */
+
+    Utils.cleanDirectory("out/nasa_logs_same_hosts.tsv")
+
+    val spark = Utils.getSpark()
+    val sc = spark.sparkContext
+
+    val rdd1 = sc.textFile("in/nasa_19950701.tsv")
+      .filter(l => !l.startsWith("host\t"))
+      .map(l => l.split("\t")(0))
+
+    val rdd2 = sc.textFile("in/nasa_19950801.tsv")
+      .filter(l => !l.startsWith("host\t"))
+      .map(l => l.split("\t")(0))
+
+    val out = rdd1.intersection(rdd2)
+
+    out.saveAsTextFile("out/nasa_logs_same_hosts.tsv")
   }
 }
