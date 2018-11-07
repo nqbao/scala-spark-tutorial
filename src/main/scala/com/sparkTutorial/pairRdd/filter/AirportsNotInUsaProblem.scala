@@ -1,5 +1,7 @@
 package com.sparkTutorial.pairRdd.filter
 
+import com.sparkTutorial.commons.Utils
+
 object AirportsNotInUsaProblem {
 
   def main(args: Array[String]) {
@@ -18,5 +20,20 @@ object AirportsNotInUsaProblem {
        ("Wewak Intl", "Papua New Guinea")
        ...
      */
+
+    Utils.cleanDirectory("out/airports_not_in_usa_pair_rdd.text")
+
+    val spark = Utils.getSpark()
+    val sc = spark.sparkContext
+
+    val rdd = sc.textFile("in/airports.text")
+      .map(line => (
+        line.split(Utils.COMMA_DELIMITER)(1), line.split(Utils.COMMA_DELIMITER)(3)
+      ))
+      .filter({
+        case (_, country) => country != "\"United States\""
+      })
+
+    rdd.saveAsTextFile("out/airports_not_in_usa_pair_rdd.text")
   }
 }

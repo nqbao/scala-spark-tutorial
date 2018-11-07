@@ -1,5 +1,7 @@
 package com.sparkTutorial.pairRdd.groupbykey
 
+import com.sparkTutorial.commons.Utils
+
 object AirportsByCountryProblem {
 
   def main(args: Array[String]) {
@@ -18,5 +20,20 @@ object AirportsByCountryProblem {
        "Papua New Guinea",  List("Goroka", "Madang", ...)
        ...
      */
+
+    Utils.cleanDirectory("out/airports_by_country.text")
+
+    val spark = Utils.getSpark()
+    val sc = spark.sparkContext
+
+    val raw = sc.textFile("in/airports.text")
+      .map(line => (
+        line.split(Utils.COMMA_DELIMITER)(3), line.split(Utils.COMMA_DELIMITER)(1)
+      ))
+
+    val rdd = raw.groupByKey()
+        .mapValues(l => l.toList)
+
+    rdd.saveAsTextFile("out/airports_by_country.text")
   }
 }
